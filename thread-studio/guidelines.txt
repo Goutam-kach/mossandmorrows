@@ -1,0 +1,118 @@
+THREAD STUDIO - WINDOWS HANDOFF
+==============================
+
+This is the self-contained HTML/Three.js website and the only site in
+this repository. The older crochet/Astro app has been removed.
+
+1. OPEN THE CORRECT WEBSITE
+
+   In File Explorer, open:
+   C:\Users\610184459\Downloads\Personal\crochet\mossandmorrows\thread-studio
+
+   Double-click index.html. Use a current Edge or Chrome browser.
+   No Node.js, npm, administrator permissions, server, or build is needed.
+   The internet is not required for the page's fonts, photos, or animations.
+   A configured Formspree submission does require the internet.
+
+   If you already have the old website open, close that tab or check that
+   the address contains /thread-studio/index.html.
+
+2. EDIT IN VS CODE
+
+   File > Open Folder > choose mossandmorrows (the Git repository).
+   Open thread-studio/site.config.js.
+
+   Change brand, wordmark, email, formspreeId, and product image references.
+   Place your own photos in thread-studio/assets/.
+   Use relative image paths: assets/your-photo.jpg.
+   Refresh the browser after editing. Ctrl+F5 reloads cached files.
+
+   Text/layout: index.html and styles.css.
+   Motion/geometry: scene.js.
+   Menu, gallery, controls, form: app.js.
+
+3. ENABLE DIRECT EMAIL SUBMISSIONS
+
+   Create a form at https://formspree.io/ and verify the receiving email.
+   Paste only the public form ID into formspreeId in site.config.js.
+   Do not paste passwords, private API keys, or account tokens.
+   Publish the folder on an HTTPS static host and send a real test inquiry.
+
+   If formspreeId remains empty, visitors are offered a prepared mailto
+   link. They must send the email themselves from their email application.
+   The placeholder hello@morrowandmoss.com address must be replaced.
+
+4. REVIEW AND COMMIT THE REPLACEMENT
+
+   Open a PowerShell terminal. Include both the new site and old app
+   deletions so GitHub does not retain the obsolete crochet directory:
+
+   cd "C:\Users\610184459\Downloads\Personal\crochet\mossandmorrows"
+   git status --short
+   git add -A -- crochet thread-studio
+   git diff --cached --stat
+   git diff --cached --name-only
+
+   Inspect the staged filenames. If unrelated files were already staged,
+   do not include them accidentally. The scoped commit below includes only
+   the replacement and leaves unrelated staged work out of this commit:
+
+   git commit --only -m "Replace old crochet app with Thread Studio" -- crochet thread-studio
+
+   These two-path commands are for this replacement commit. For later
+   updates, use only thread-studio after crochet is no longer tracked.
+
+   Push only when you are ready:
+
+   git push
+
+   The assistant has not committed or pushed anything for you.
+   On another laptop, clone/pull the repository and open this same folder.
+
+5. PUBLISH
+
+   Upload the complete thread-studio folder contents to a static host.
+   Build command: none.
+   Publish directory from repository root: thread-studio
+   Entry point: index.html.
+   Include assets/ and vendor/. There is no dist/ directory to generate.
+   Remove any previous Astro build command or crochet/dist publish path.
+
+6. BEFORE SHARING WITH CUSTOMERS
+
+   README.md contains the completed technical commit checklist and the
+   remaining launch checklist. Passing technical checks does not replace
+   the following business and live-delivery checks:
+
+   Replace the placeholder brand/contact details and reference photography.
+   Review title/description and the noscript fallback in index.html.
+   Review gallery labels: the supplied photos are not your finished work.
+   Test the form after deployment and review privacy/retention settings.
+   Test on a real phone and a desktop browser at different window sizes.
+   Keep third-party font and library license files when distributing.
+
+7. MOTION AND TROUBLESHOOTING
+
+   Start scrolling from the top: two differently colored yarn balls and
+   two crochet hooks feed matching strands into a terracotta crochet
+   planter, textured stems, shaped leaves, and flowers. Two fully covered,
+   stitched amigurumi birds form on separate perches; they flap and fly
+   from right to left as you continue to scroll. Both balls shrink as the
+   work progresses and remain visible when finished. The two yarn colors
+   alternate through every crochet round of the planter. Scroll backwards
+   to bring the birds back and unravel the scene.
+   The pause icon stops ambient motion; the expand icon isolates the scene.
+   Use the minimize icon or Escape to return to the website.
+   Photos open larger when selected and close with X or Escape.
+
+   If your OS requests reduced motion, automatic motion starts paused.
+   The play control can enable the 3D animation; CSS motion continues to
+   respect the operating system's preference.
+
+   If WebGL is blocked, a static yarn illustration appears instead.
+   Hardware acceleration and a current browser improve 3D performance.
+   Background/hidden tabs deliberately stop animation to save power.
+
+   A Three.js classic-build deprecation warning is expected. It is not a
+   rendering failure. The included pinned version supports direct HTML
+   opening; newer ES-module builds need a different loading setup.

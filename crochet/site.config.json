@@ -1,0 +1,39 @@
+{
+  "brand": {
+    "name": "Morrow & Moss",
+    "wordmark": "morrow&moss",
+    "tagline": "Crochet, made slowly",
+    "description": "Slow-made crochet pieces for softer everyday rituals. Small-batch homewares and accessories, made by hand with care.",
+    "siteUrl": "https://morrowandmoss.com",
+    "contactEmail": "hello@morrowandmoss.com"
+  },
+  "formspree": {
+    "formId": ""
+  },
+  "assets": {
+    "directory": "/assets/",
+    "openGraph": "https://images.unsplash.com/photo-1749103729324-39d8a868ed06?q=80&w=1200&auto=format&fit=crop",
+    "hero": {
+      "src": "https://images.unsplash.com/photo-1749103729324-39d8a868ed06?q=85&w=2200&auto=format&fit=crop",
+      "alt": "A crochet hook working blue yarn into a handmade piece"
+    },
+    "story": {
+      "src": "https://images.unsplash.com/photo-1735414526594-a97524c7615d?q=85&w=1400&auto=format&fit=crop",
+      "alt": "Hands holding a crochet hook and working yarn"
+    },
+    "products": {
+      "sunday-market-tote": {
+        "src": "https://images.unsplash.com/photo-1749103736516-fecf975e50fb?q=80&w=1200&auto=format&fit=crop",
+        "alt": "Crochet blanket in progress beside its yarn"
+      },
+      "soft-day-layer": {
+        "src": "https://images.unsplash.com/photo-1756141258995-647970dae9d1?q=80&w=1200&auto=format&fit=crop",
+        "alt": "A hand showing the texture of a colorful crochet blanket"
+      },
+      "sunday-slow-basket": {
+        "src": "https://images.unsplash.com/photo-1693326873444-d7cf33cad3e0?q=80&w=1200&auto=format&fit=crop",
+        "alt": "A crochet hook resting in a ball of yarn"
+      }
+    }
+  }
+}

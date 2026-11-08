@@ -1,0 +1,94 @@
+# Morrow & Moss project guide
+
+## Project root
+
+The project root is the folder containing `package.json`, `astro.config.mjs`, and `site.config.json`. In this workspace it is:
+
+```text
+C:\Users\610184459\Downloads\Personal\crochet
+```
+
+The Astro source is in `src/`. The root `index.html` is a standalone preview snapshot; the configurable Astro app is the production source.
+
+## Install Node.js on your personal Windows laptop
+
+1. Install the current Node.js LTS release. In PowerShell, run:
+
+	```powershell
+	winget install --id OpenJS.NodeJS.LTS --exact
+	```
+
+	If `winget` is unavailable, download and run the LTS Windows installer from <https://nodejs.org/en/download/>. Keep the npm and PATH options enabled.
+
+2. Close and reopen VS Code so the terminal refreshes its PATH.
+
+3. Verify both tools are available:
+
+	```powershell
+	node --version
+	npm --version
+	```
+
+## Get the project from GitHub
+
+If the repository is not cloned yet, replace the placeholder with your GitHub repository URL:
+
+```powershell
+Set-Location "$HOME\Downloads\Personal"
+git clone <your-repository-url> crochet
+Set-Location .\crochet
+```
+
+If the repository is already cloned, open a PowerShell terminal in that folder instead. Confirm it is the project root:
+
+```powershell
+Test-Path .\package.json
+Test-Path .\site.config.json
+```
+
+Both commands should return `True`.
+
+## Install and run
+
+Run these commands from the project root:
+
+```powershell
+npm install
+npx playwright install chromium
+npm run dev
+```
+
+Open the local URL printed by Astro, normally <http://localhost:4321/>. Keep the terminal running while you use the development site. Press `Ctrl+C` in that terminal to stop it.
+
+## Validate and build
+
+```powershell
+npm run check
+npm run test:e2e
+npm run build
+npm run preview
+```
+
+`npm run build` creates the deployable static site in `dist/`. `npm run preview` serves that build locally.
+
+## Change business details and photos
+
+- Edit the brand name, wordmark, tagline, domain, contact email, image paths, alt text, and Formspree form ID in the root `site.config.json`.
+- Put all replacement photos in `public/assets/`. Use paths such as `/assets/hero.webp` in `site.config.json`. Keep the photos you want published in GitHub; `.gitignore` does not exclude this folder.
+- Product names and descriptions live in `src/content/products/` as Markdown files. Add one Markdown file per product and follow the existing frontmatter fields.
+- Create a Formspree form and paste its form ID into `formspree.formId` in `site.config.json`. Leave it blank to use the email fallback. Do not put Formspree private API keys or other secrets in the repository.
+- Update the sample privacy wording and confirm the configured domain and contact email before launch.
+
+## Commit to GitHub
+
+From the project root, inspect the files that will be committed, then stage and commit the project:
+
+```powershell
+git status --short
+git add .
+git status --short
+git commit -m "Set up crochet storefront"
+git push
+```
+
+The ignore rules exclude `node_modules`, generated build/cache files, Playwright output, local environment files, and OS metadata. They do not exclude `src/`, `public/assets/`, `site.config.json`, or the standalone preview.

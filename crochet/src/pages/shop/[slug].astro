@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import siteConfig from '../../../site.config.json';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return Promise.all(products.map(async (product) => {
+    const { Content } = await render(product);
+    return { params: { slug: product.id }, props: { product, Content } };
+  }));
+}
+
+const { product, Content } = Astro.props;
+const productImage = siteConfig.assets.products[product.id as keyof typeof siteConfig.assets.products];
+---
+<SiteLayout title={product.data.title} description={product.data.description} canonicalPath={`/shop/${product.id}/`} image={productImage.src}>
+  <div class="product-detail section-wrap">
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Shop', href: '/shop/' }, { label: product.data.title }]} />
+    <div class="product-detail-grid">
+      <div class="product-detail-image">
+        <img src={productImage.src} alt={productImage.alt} fetchpriority="high">
+      </div>
+      <div class="product-detail-copy">
+        <p class="eyebrow"><span class="eyebrow-mark"></span> {product.data.category === 'wear' ? 'Made to wear' : 'Made for home'}</p>
+        <h1>{product.data.title}</h1>
+        <p class="product-lede">{product.data.description}</p>
+        <div class="product-rich-text"><Content /></div>
+        <ul class="product-details-list">
+          {product.data.details.map((detail) => <li>{detail}</li>)}
+        </ul>
+        <a class="button button-dark" href={`/custom-orders/?piece=${encodeURIComponent(product.id)}`}>Ask about this piece <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </div>
+</SiteLayout>

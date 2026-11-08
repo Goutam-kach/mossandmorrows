@@ -1,0 +1,23 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import siteConfig from '../../site.config.json';
+---
+<SiteLayout title="Our story" description={`Meet the maker behind ${siteConfig.brand.name} and the slow-made crochet studio.`} canonicalPath="/about/">
+  <div class="story-page section-wrap">
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Our story' }]} />
+  </div>
+  <section class="story" aria-labelledby="story-title">
+    <div class="story-image-wrap">
+      <img src={siteConfig.assets.story.src} alt={siteConfig.assets.story.alt} fetchpriority="high">
+      <span class="story-stamp">made<br>slowly</span>
+    </div>
+    <div class="story-copy">
+      <p class="eyebrow"><span class="eyebrow-mark"></span> A note from the maker</p>
+      <h1 id="story-title">The good things<br>take <em>their time.</em></h1>
+      <p>There is something lovely about making at the pace of your own hands. {siteConfig.brand.name} is a small crochet studio creating thoughtful pieces for home, for wearing, and for gifting.</p>
+      <p>No rush, no two exactly alike. Just good yarn, careful stitches, and a little joy tucked into the everyday.</p>
+      <a class="text-link" href="/shop/">Explore the collection <span aria-hidden="true">&#8599;</span></a>
+    </div>
+  </section>
+</SiteLayout>

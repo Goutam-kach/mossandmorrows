@@ -1,0 +1,19 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import siteConfig from '../../site.config.json';
+---
+<SiteLayout title="Privacy" description={`Privacy information for ${siteConfig.brand.name}, a small crochet studio.`} canonicalPath="/privacy/">
+  <section class="legal-page">
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]} />
+    <p class="eyebrow"><span class="eyebrow-mark"></span> The practical bits</p>
+    <h1>Privacy, simply.</h1>
+    <p class="legal-updated">Last updated: November 8, 2026</p>
+    <h2>This preview</h2>
+    <p>This site does not currently use analytics or advertising cookies. When a Formspree ID is configured, custom-order details are sent to that service; until then, the form opens your default email application. Update this notice to match the final setup before launch.</p>
+    <h2>When you email us</h2>
+    <p>Your message and email address may be used to reply to your enquiry and discuss a possible order. Do not send sensitive personal information. To ask about or remove information you have sent, contact <a href={`mailto:${siteConfig.brand.contactEmail}`}>{siteConfig.brand.contactEmail}</a>.</p>
+    <h2>Before launch</h2>
+    <p>This is starter text for the prototype, not legal advice. Update it to reflect the final business, order process, hosting, any form provider or analytics, and the privacy rules that apply where you operate and sell.</p>
+  </section>
+</SiteLayout>

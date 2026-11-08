@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CustomOrderForm from '../components/CustomOrderForm.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const products = await getCollection('products');
+---
+<SiteLayout title="Custom crochet orders" description="Tell us about the crochet piece you have in mind. Every custom order starts with a conversation." canonicalPath="/custom-orders/">
+  <section class="custom-page section-wrap">
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Custom orders' }]} />
+    <div class="custom">
+      <div class="custom-heading">
+        <p class="eyebrow"><span class="eyebrow-mark"></span> Made around you</p>
+        <h1>Have a little<br><em>something in mind?</em></h1>
+        <p>Tell us what you’re dreaming up. We’ll take it one stitch at a time.</p>
+        <div class="custom-note"><span class="note-dot"></span> Commissions are open for the season</div>
+      </div>
+      <CustomOrderForm products={products} />
+    </div>
+  </section>
+</SiteLayout>

@@ -1,0 +1,41 @@
+---
+import siteConfig from '../../site.config.json';
+
+const [wordmarkStart, wordmarkEnd] = siteConfig.brand.wordmark.split('&');
+---
+<div class="announcement">Small batches, made slowly <span aria-hidden="true">&middot;</span> Thoughtfully made to be kept</div>
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label={`${siteConfig.brand.name} home`}>{wordmarkStart}<span>&amp;</span>{wordmarkEnd}</a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+    <a href="/shop/">Shop</a>
+    <a href="/about/">Our story</a>
+    <a href="/custom-orders/">Custom work</a>
+  </nav>
+  <a class="header-cta" href="/custom-orders/">Make it yours <span aria-hidden="true">&#8599;</span></a>
+</header>
+
+<script>
+  const menuToggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const primaryNav = document.querySelector<HTMLElement>('.primary-nav');
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!isOpen));
+    primaryNav?.classList.toggle('is-open', !isOpen);
+  });
+
+  primaryNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      primaryNav?.classList.remove('is-open');
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      primaryNav?.classList.remove('is-open');
+    }
+  });
+</script>

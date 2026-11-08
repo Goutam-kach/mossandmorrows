@@ -1,0 +1,60 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import siteConfig from '../../site.config.json';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  image?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalPath = Astro.url.pathname,
+  image = siteConfig.assets.openGraph,
+  noIndex = false,
+} = Astro.props;
+const pageTitle = title.includes(siteConfig.brand.name) ? title : `${title} | ${siteConfig.brand.name}`;
+const canonical = new URL(canonicalPath, `${siteConfig.brand.siteUrl}/`).href;
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteConfig.brand.name,
+  url: siteConfig.brand.siteUrl,
+  description: siteConfig.brand.description,
+  email: siteConfig.brand.contactEmail,
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f2eee4">
+    <meta name="description" content={description}>
+    <meta name="robots" content={noIndex ? 'noindex, follow' : 'index, follow'}>
+    <link rel="canonical" href={canonical}>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content={canonical}>
+    <meta property="og:title" content={pageTitle}>
+    <meta property="og:description" content={description}>
+    <meta property="og:image" content={image}>
+    <title>{pageTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json" set:html={JSON.stringify(organization)}></script>
+    <script is:inline>document.documentElement.classList.add('has-js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>

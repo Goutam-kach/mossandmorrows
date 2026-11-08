@@ -20,7 +20,7 @@ const productImage = siteConfig.assets.products[product.id as keyof typeof siteC
     <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Shop', href: '/shop/' }, { label: product.data.title }]} />
     <div class="product-detail-grid">
       <div class="product-detail-image">
-        <img src={productImage.src} alt={productImage.alt} fetchpriority="high">
+        <img src={productImage.src} alt={productImage.alt} fetchpriority="high" transition:name={`product-image-${product.id}`}>
       </div>
       <div class="product-detail-copy">
         <p class="eyebrow"><span class="eyebrow-mark"></span> {product.data.category === 'wear' ? 'Made to wear' : 'Made for home'}</p>

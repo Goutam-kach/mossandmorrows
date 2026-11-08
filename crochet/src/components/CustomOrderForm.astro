@@ -46,53 +46,60 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
 </form>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>('#order-form');
-  const productSelect = document.querySelector<HTMLSelectElement>('#piece');
-  const formStatus = document.querySelector<HTMLElement>('#form-status');
-  const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  function initializeOrderForm() {
+    const form = document.querySelector<HTMLFormElement>('#order-form');
+    const productSelect = document.querySelector<HTMLSelectElement>('#piece');
+    const formStatus = document.querySelector<HTMLElement>('#form-status');
+    const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!form || form.dataset.enhanced) return;
+    form.dataset.enhanced = 'true';
 
-  const requestedPiece = new URLSearchParams(window.location.search).get('piece');
-  if (requestedPiece && productSelect?.querySelector(`option[value="${CSS.escape(requestedPiece)}"]`)) {
-    productSelect.value = requestedPiece;
-  }
-
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-
-    const data = new FormData(form);
-    const selectedPiece = productSelect?.selectedOptions[0]?.textContent ?? '';
-    const endpoint = form.dataset.formspreeEndpoint;
-    if (endpoint) {
-      if (submitButton) submitButton.disabled = true;
-      if (formStatus) formStatus.textContent = 'Sending your note...';
-      try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          body: data,
-          headers: { Accept: 'application/json' },
-        });
-        if (!response.ok) throw new Error('Formspree request failed');
-        form.reset();
-        if (formStatus) formStatus.textContent = 'Thank you. Your note has been sent to the studio.';
-      } catch {
-        if (formStatus) formStatus.textContent = 'Your note could not be sent. Please try again or email the studio.';
-      } finally {
-        if (submitButton) submitButton.disabled = false;
-      }
-      return;
+    const requestedPiece = new URLSearchParams(window.location.search).get('piece');
+    if (requestedPiece && productSelect?.querySelector(`option[value="${CSS.escape(requestedPiece)}"]`)) {
+      productSelect.value = requestedPiece;
     }
 
-    const subject = `Custom crochet enquiry: ${selectedPiece}`;
-    const body = [
-      `Name: ${data.get('name')}`,
-      `Email: ${data.get('email')}`,
-      `Piece: ${selectedPiece}`,
-      '',
-      'Details:',
-      data.get('details'),
-    ].join('\n');
-    if (formStatus) formStatus.textContent = 'Opening your email app with your note ready to send.';
-    window.location.href = `mailto:${form.dataset.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const selectedPiece = productSelect?.selectedOptions[0]?.textContent ?? '';
+      const endpoint = form.dataset.formspreeEndpoint;
+      if (endpoint) {
+        if (submitButton) submitButton.disabled = true;
+        if (formStatus) formStatus.textContent = 'Sending your note...';
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            body: data,
+            headers: { Accept: 'application/json' },
+          });
+          if (!response.ok) throw new Error('Formspree request failed');
+          form.reset();
+          if (formStatus) formStatus.textContent = 'Thank you. Your note has been sent to the studio.';
+        } catch {
+          if (formStatus) formStatus.textContent = 'Your note could not be sent. Please try again or email the studio.';
+        } finally {
+          if (submitButton) submitButton.disabled = false;
+        }
+        return;
+      }
+
+      const subject = `Custom crochet enquiry: ${selectedPiece}`;
+      const body = [
+        `Name: ${data.get('name')}`,
+        `Email: ${data.get('email')}`,
+        `Piece: ${selectedPiece}`,
+        '',
+        'Details:',
+        data.get('details'),
+      ].join('\n');
+      if (formStatus) formStatus.textContent = 'Opening your email app with your note ready to send.';
+      window.location.href = `mailto:${form.dataset.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+
+  document.addEventListener('astro:page-load', initializeOrderForm);
+  initializeOrderForm();
 </script>

@@ -2,11 +2,13 @@
 import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import ProductGallery from '../components/ProductGallery.astro';
+import ThreadJourney from '../components/ThreadJourney.astro';
 import siteConfig from '../../site.config.json';
 
 const products = (await getCollection('products'))
   .filter((product) => product.data.featured)
   .sort((a, b) => a.data.number.localeCompare(b.data.number));
+const [brandFirst, brandSecond] = siteConfig.brand.name.split(' & ');
 ---
 <SiteLayout
   title={siteConfig.brand.tagline}
@@ -18,14 +20,14 @@ const products = (await getCollection('products'))
     <div class="hero-shade"></div>
     <div class="hero-content">
       <p class="eyebrow light-eyebrow"><span class="eyebrow-mark"></span> The slow-made crochet studio</p>
-      <h1 id="hero-title">Morrow<br>&amp; Moss</h1>
+      <h1 id="hero-title">{brandFirst}<br>&amp; {brandSecond}</h1>
       <p class="hero-copy">Soft things for everyday living.<br>Made by hand, and made to stay.</p>
       <a class="button button-light" href="#collection">Explore the collection <span aria-hidden="true">&#8595;</span></a>
     </div>
     <p class="hero-caption">Made slowly in small batches <span>01 / 03</span></p>
   </section>
 
-  <section class="intro section-wrap" aria-labelledby="intro-title">
+  <section class="intro section-wrap" aria-labelledby="intro-title" data-reveal>
     <p class="eyebrow"><span class="eyebrow-mark"></span> A softer kind of everyday</p>
     <h2 id="intro-title">A little more <em>human.</em><br>A little less hurry.</h2>
     <p class="intro-note">Every piece begins with a simple thing: good yarn, a patient hand, and the pleasure of making something useful.</p>
@@ -33,8 +35,10 @@ const products = (await getCollection('products'))
 
   <ProductGallery products={products} />
 
-  <section class="story" id="story" aria-labelledby="story-title">
-    <div class="story-image-wrap">
+  <ThreadJourney />
+
+  <section class="story" id="story" aria-labelledby="story-title" data-reveal>
+    <div class="story-image-wrap" data-reveal>
       <img src={siteConfig.assets.story.src} alt={siteConfig.assets.story.alt} loading="lazy" decoding="async">
       <span class="story-stamp">made<br>slowly</span>
     </div>
@@ -47,8 +51,8 @@ const products = (await getCollection('products'))
     </div>
   </section>
 
-  <section class="custom section-wrap" aria-labelledby="custom-title">
-    <div class="custom-heading">
+  <section class="custom section-wrap" aria-labelledby="custom-title" data-reveal>
+    <div class="custom-heading" data-reveal>
       <p class="eyebrow"><span class="eyebrow-mark"></span> Made around you</p>
       <h2 id="custom-title">Have a little<br><em>something in mind?</em></h2>
       <p>Tell us what you’re dreaming up. We’ll take it one stitch at a time.</p>

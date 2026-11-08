@@ -12,7 +12,7 @@ const image = siteConfig.assets.products[product.id as keyof typeof siteConfig.a
 ---
 <article class="product-card reveal" data-category={product.data.category} data-reveal>
   <a class="product-image-link" href={`/shop/${product.id}/`} aria-label={`View ${product.data.title}`}>
-    <img src={image.src} alt={image.alt} loading="lazy" decoding="async">
+    <img src={image.src} alt={image.alt} loading="lazy" decoding="async" transition:name={`product-image-${product.id}`}>
     <span class="product-index">{product.data.number}</span>
     <span class="image-cta" aria-hidden="true">View this piece &#8599;</span>
   </a>

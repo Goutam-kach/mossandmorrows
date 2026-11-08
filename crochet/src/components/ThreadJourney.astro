@@ -1,0 +1,250 @@
+<section class="thread-journey" data-thread-journey aria-labelledby="thread-journey-title">
+  <canvas class="thread-journey-canvas" aria-hidden="true"></canvas>
+  <div class="thread-journey-heading" data-reveal>
+    <p class="eyebrow"><span class="eyebrow-mark"></span> The making journey</p>
+    <h2 id="thread-journey-title">From first loop<br>to <em>finished piece.</em></h2>
+    <p>Follow the hook through the small, satisfying steps that turn yarn into something to keep.</p>
+  </div>
+  <ol class="thread-milestones">
+    <li data-reveal>
+      <span class="milestone-number">01</span>
+      <h3>Prepare</h3>
+      <p>Choose the shape, yarn, and colors for the idea.</p>
+    </li>
+    <li data-reveal>
+      <span class="milestone-number">02</span>
+      <h3>Stitch</h3>
+      <p>Build the form with a hook, one loop at a time.</p>
+    </li>
+    <li data-reveal>
+      <span class="milestone-number">03</span>
+      <h3>Finish</h3>
+      <p>Check the details and get your piece ready for its next chapter.</p>
+    </li>
+  </ol>
+</section>
+
+<script>
+  import * as THREE from 'three';
+
+  type JourneyCleanup = () => void;
+  let cleanups: JourneyCleanup[] = [];
+
+  function createJourney(section: HTMLElement): JourneyCleanup | undefined {
+    const canvas = section.querySelector<HTMLCanvasElement>('.thread-journey-canvas');
+    if (!canvas) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let renderer: THREE.WebGLRenderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
+    } catch {
+      canvas.hidden = true;
+      return;
+    }
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-8, 8, 5, -5, 0.1, 50);
+    camera.position.z = 20;
+    scene.add(new THREE.AmbientLight(0xfff1d8, 2.2));
+
+    const keyLight = new THREE.DirectionalLight(0xffd49a, 3.8);
+    keyLight.position.set(-4, 5, 8);
+    scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0xa6c0a3, 2.5);
+    rimLight.position.set(5, -2, 6);
+    scene.add(rimLight);
+
+    const threadGroup = new THREE.Group();
+    scene.add(threadGroup);
+    const threadMaterials = [
+      new THREE.MeshStandardMaterial({ color: 0xc78549, roughness: 0.38, metalness: 0.12 }),
+      new THREE.MeshStandardMaterial({ color: 0xe9ddc0, roughness: 0.48, metalness: 0.04 }),
+      new THREE.MeshStandardMaterial({ color: 0x9ca486, roughness: 0.44, metalness: 0.08 }),
+    ];
+    const coreMaterial = new THREE.MeshStandardMaterial({ color: 0x594638, roughness: 0.7 });
+    const hookMaterial = new THREE.MeshStandardMaterial({ color: 0xe5b46e, metalness: 0.76, roughness: 0.22 });
+    const handleMaterial = new THREE.MeshStandardMaterial({ color: 0x73583f, roughness: 0.47 });
+    const markerMaterials = [
+      new THREE.MeshStandardMaterial({ color: 0xe1ad6e, emissive: 0x4d2915, roughness: 0.4 }),
+      new THREE.MeshStandardMaterial({ color: 0xf0e3c9, emissive: 0x38301f, roughness: 0.45 }),
+      new THREE.MeshStandardMaterial({ color: 0xaeba9a, emissive: 0x1d2e1a, roughness: 0.4 }),
+    ];
+    const segmentCount = 300;
+    const hookAxis = new THREE.Vector3(1, 0, 0);
+    let curve = new THREE.CatmullRomCurve3([]);
+    let hook: THREE.Group | undefined;
+    let stitches: THREE.Mesh[] = [];
+    let currentProgress = 0;
+    let targetProgress = 0;
+    let visible = false;
+    let animationFrame = 0;
+
+    function buildThread() {
+      threadGroup.children.forEach((child) => {
+        if (child instanceof THREE.Mesh) child.geometry.dispose();
+      });
+      threadGroup.clear();
+      const width = 10 * (section.clientWidth / Math.max(section.clientHeight, 1));
+      const points: THREE.Vector3[] = [];
+      for (let index = 0; index <= 60; index += 1) {
+        const progress = index / 60;
+        const x = (progress - 0.5) * width * 0.9;
+        const y = Math.sin(progress * Math.PI * 6) * 0.78 + Math.sin(progress * Math.PI * 18) * 0.1;
+        const z = Math.cos(progress * Math.PI * 4) * 0.48;
+        points.push(new THREE.Vector3(x, y, z));
+      }
+
+      curve = new THREE.CatmullRomCurve3(points);
+      const frames = curve.computeFrenetFrames(segmentCount, false);
+      const core = new THREE.Mesh(new THREE.TubeGeometry(curve, segmentCount, 0.033, 8, false), coreMaterial);
+      threadGroup.add(core);
+
+      threadMaterials.forEach((material, strandIndex) => {
+        const strandPoints: THREE.Vector3[] = [];
+        const phase = (strandIndex / threadMaterials.length) * Math.PI * 2;
+        for (let index = 0; index <= segmentCount; index += 1) {
+          const progress = index / segmentCount;
+          const point = curve.getPointAt(progress);
+          const angle = progress * Math.PI * 2 * 36 + phase;
+          point.addScaledVector(frames.normals[index], Math.cos(angle) * 0.05);
+          point.addScaledVector(frames.binormals[index], Math.sin(angle) * 0.05);
+          strandPoints.push(point);
+        }
+        const strandCurve = new THREE.CatmullRomCurve3(strandPoints);
+        threadGroup.add(new THREE.Mesh(new THREE.TubeGeometry(strandCurve, segmentCount, 0.018, 6, false), material));
+      });
+
+      stitches = [0.17, 0.5, 0.83].map((progress, index) => {
+        const stitch = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.025, 8, 20), markerMaterials[index]);
+        const point = curve.getPointAt(progress);
+        stitch.position.copy(point);
+        stitch.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), curve.getTangentAt(progress).normalize());
+        threadGroup.add(stitch);
+        return stitch;
+      });
+
+      hook = new THREE.Group();
+      const shaft = new THREE.CylinderGeometry(0.025, 0.04, 1.35, 12);
+      shaft.rotateZ(-Math.PI / 2);
+      hook.add(new THREE.Mesh(shaft, hookMaterial));
+      const handle = new THREE.CylinderGeometry(0.045, 0.065, 0.72, 12);
+      handle.rotateZ(-Math.PI / 2);
+      const handleMesh = new THREE.Mesh(handle, handleMaterial);
+      handleMesh.position.x = -0.94;
+      hook.add(handleMesh);
+      const hookTipCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.57, 0, 0),
+        new THREE.Vector3(0.86, 0.02, 0),
+        new THREE.Vector3(0.91, 0.19, 0),
+        new THREE.Vector3(0.79, 0.28, 0),
+        new THREE.Vector3(0.66, 0.22, 0),
+      ]);
+      hook.add(new THREE.Mesh(new THREE.TubeGeometry(hookTipCurve, 28, 0.035, 8, false), hookMaterial));
+      scene.add(hook);
+    }
+
+    function updateDimensions() {
+      const width = Math.max(section.clientWidth, 1);
+      const height = Math.max(section.clientHeight, 1);
+      const halfHeight = 5;
+      const halfWidth = halfHeight * (width / height);
+      camera.left = -halfWidth;
+      camera.right = halfWidth;
+      camera.top = halfHeight;
+      camera.bottom = -halfHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+      buildThread();
+      updateHook(currentProgress);
+      renderer.render(scene, camera);
+    }
+
+    function readScrollProgress() {
+      const bounds = section.getBoundingClientRect();
+      const travel = window.innerHeight + bounds.height;
+      targetProgress = THREE.MathUtils.clamp((window.innerHeight - bounds.top) / travel, 0, 1);
+    }
+
+    function updateHook(progress: number) {
+      if (!hook || curve.points.length === 0) return;
+      hook.position.copy(curve.getPointAt(progress));
+      hook.quaternion.setFromUnitVectors(hookAxis, curve.getTangentAt(progress).normalize());
+    }
+
+    function animate(time: number) {
+      animationFrame = window.requestAnimationFrame(animate);
+      currentProgress += (targetProgress - currentProgress) * 0.065;
+      updateHook(currentProgress);
+      stitches.forEach((stitch, index) => {
+        const pulse = 1 + Math.max(0, Math.sin(time * 0.0016 - index * 1.9)) * 0.1;
+        stitch.scale.setScalar(pulse);
+      });
+      renderer.render(scene, camera);
+    }
+
+    function startAnimation() {
+      if (!visible || reducedMotion || animationFrame) return;
+      animationFrame = window.requestAnimationFrame(animate);
+    }
+
+    function stopAnimation() {
+      if (!animationFrame) return;
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    }
+
+    hook = new THREE.Group();
+    scene.add(hook);
+    updateDimensions();
+    readScrollProgress();
+
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(section);
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) startAnimation();
+      else stopAnimation();
+    }, { rootMargin: '100px 0px' });
+    visibilityObserver.observe(section);
+    window.addEventListener('scroll', readScrollProgress, { passive: true });
+    document.addEventListener('astro:page-load', readScrollProgress);
+
+    if (reducedMotion) {
+      currentProgress = 0.5;
+      targetProgress = 0.5;
+      updateHook(0.5);
+      renderer.render(scene, camera);
+    }
+
+    return () => {
+      stopAnimation();
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      window.removeEventListener('scroll', readScrollProgress);
+      document.removeEventListener('astro:page-load', readScrollProgress);
+      scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) object.geometry.dispose();
+      });
+      [...threadMaterials, coreMaterial, hookMaterial, handleMaterial, ...markerMaterials].forEach((material) => material.dispose());
+      renderer.dispose();
+    };
+  }
+
+  function initializeJourneys() {
+    cleanups.forEach((cleanup) => cleanup());
+    cleanups = Array.from(document.querySelectorAll<HTMLElement>('[data-thread-journey]'))
+      .map((section) => createJourney(section))
+      .filter((cleanup): cleanup is JourneyCleanup => Boolean(cleanup));
+  }
+
+  document.addEventListener('astro:page-load', initializeJourneys);
+  initializeJourneys();
+</script>

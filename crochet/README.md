@@ -1,6 +1,6 @@
 # Morrow & Moss storefront
 
-The production source is the Astro project under `src/`. Business settings, the Formspree ID, and every Astro image reference are centralized in [`site.config.json`](site.config.json). The root `index.html` is a standalone preview snapshot; use the Astro app for the configurable site.
+The Git repository root is the parent `mossandmorrows/` folder; this nested `crochet/` folder is the Astro app root. Business settings, the Formspree ID, and every Astro image reference are centralized in [`site.config.json`](site.config.json). The root `index.html` is a standalone styling preview only; the full route transitions and Three.js thread are available when you run the Astro app with `npm run dev`.
 
 ## Project structure
 
@@ -14,6 +14,7 @@ src/
 		ProductGallery.astro
 		SiteFooter.astro
 		SiteHeader.astro
+		ThreadJourney.astro
 	content/products/
 	layouts/SiteLayout.astro
 	pages/
@@ -28,6 +29,7 @@ src/
 		robots.txt.ts
 		sitemap.xml.ts
 	styles/
+		experience.css
 		tokens.css
 		global.css
 tests/playwright/storefront.spec.ts
@@ -44,11 +46,11 @@ public/
 ## Install and run on Windows
 
 1. Install the current Node.js LTS Windows installer from [nodejs.org](https://nodejs.org/en/download/). Keep the npm package manager and PATH options enabled.
-2. Close and reopen VS Code, then open a PowerShell terminal in the project root: the folder containing `package.json`, `astro.config.mjs`, and `site.config.json`.
+2. Close and reopen VS Code. To view only the clone, choose **File > Open Folder...** and select the `mossandmorrows/` Git root. Open its `crochet/` child in the Explorer. Run npm from that child folder, which contains `package.json`, `astro.config.mjs`, and `site.config.json`.
 3. Confirm Node and npm are available, install dependencies, and start Astro:
 
 ```powershell
-cd "$HOME\Downloads\Personal\crochet"
+cd "$HOME\Downloads\Personal\crochet\mossandmorrows\crochet"
 node --version
 npm --version
 npm install
@@ -58,7 +60,7 @@ npm run dev
 
 4. Open the local URL Astro prints, normally `http://localhost:4321/`.
 
-Run `npm run check` for diagnostics, `npm run test:e2e` for desktop and mobile Playwright coverage, `npm run build` for the static production build, and `npm run preview` to preview `dist/`. The Playwright test command starts Astro automatically.
+Run `npm run check` for diagnostics, `npm run test:e2e` for desktop and mobile Playwright coverage, `npm run build` for the static production build, and `npm run preview` to preview `dist/`. The Playwright test command starts Astro automatically. Git commands and `.gitignore` are at the parent `mossandmorrows/` repository root.
 
 ## Replace before publishing
 
@@ -76,6 +78,8 @@ Run `npm run check` for diagnostics, `npm run test:e2e` for desktop and mobile P
 - Collection filters for wearables and home pieces.
 - Product links preselect a custom-order item.
 - Custom order form validates required fields, submits to Formspree when configured, and otherwise opens a prefilled email.
+- Three.js draws a braided thread and crochet hook inside the making-journey section; the scene scrolls with the page and the hook follows the thread as that section enters view.
+- Astro view transitions connect page navigation and matching product images.
 - Scroll reveals respect reduced-motion preferences.
 
 ## Production checklist

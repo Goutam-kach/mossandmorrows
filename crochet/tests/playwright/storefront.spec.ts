@@ -5,6 +5,14 @@ test('home page presents the studio and featured collection', async ({ page }) =
   await expect(page.getByRole('heading', { name: 'Morrow & Moss' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'The collection' })).toBeVisible();
   await expect(page.locator('.product-card')).toHaveCount(3);
+  await expect(page.locator('.thread-journey-canvas')).toBeAttached();
+});
+
+test('a collection item opens its own product page', async ({ page }) => {
+  await page.goto('/shop/');
+  await page.getByRole('link', { name: 'View Sunday market tote' }).click();
+  await expect(page).toHaveURL(/shop\/sunday-market-tote\//);
+  await expect(page.getByRole('heading', { name: 'Sunday market tote' })).toBeVisible();
 });
 
 test('collection filters show the selected category', async ({ page }) => {
@@ -13,6 +21,12 @@ test('collection filters show the selected category', async ({ page }) => {
   await expect(page.locator('.product-card:visible')).toHaveCount(1);
   await page.getByRole('button', { name: /For home/ }).click();
   await expect(page.locator('.product-card:visible')).toHaveCount(2);
+});
+
+test('custom orders explain what happens next', async ({ page }) => {
+  await page.goto('/custom-orders/');
+  await expect(page.getByRole('heading', { name: 'A few good things to know.' })).toBeVisible();
+  await expect(page.getByText('What happens after I send a note?')).toBeVisible();
 });
 
 test('mobile navigation opens and product inquiry preselects the item', async ({ page }) => {

@@ -1,14 +1,25 @@
 # Morrow & Moss project guide
 
-## Project root
+## Repository and app roots
 
-The project root is the folder containing `package.json`, `astro.config.mjs`, and `site.config.json`. In this workspace it is:
+This clone has two relevant folders:
 
 ```text
-C:\Users\610184459\Downloads\Personal\crochet
+C:\Users\610184459\Downloads\Personal\crochet\mossandmorrows  (Git root)
+	.gitignore
+	crochet                                                       (Astro app root)
+		package.json
+		astro.config.mjs
+		site.config.json
 ```
 
-The Astro source is in `src/`. The root `index.html` is a standalone preview snapshot; the configurable Astro app is the production source.
+The Astro source is in the app root's `src/`. Its root `index.html` is a standalone preview snapshot; the configurable Astro app is the production source.
+
+## View only this project in VS Code
+
+1. Choose **File > Open Folder...**.
+2. Select `C:\Users\610184459\Downloads\Personal\crochet\mossandmorrows` and choose **Select Folder**. The Explorer will show only this cloned Git repository, not the unrelated outer workspace files.
+3. Expand `crochet` to see the website. To see only the website files, open `C:\Users\610184459\Downloads\Personal\crochet\mossandmorrows\crochet` instead. Git is still rooted one folder above, in `mossandmorrows`.
 
 ## Install Node.js on your personal Windows laptop
 
@@ -35,22 +46,25 @@ If the repository is not cloned yet, replace the placeholder with your GitHub re
 
 ```powershell
 Set-Location "$HOME\Downloads\Personal"
-git clone <your-repository-url> crochet
-Set-Location .\crochet
+git clone <your-repository-url> mossandmorrows
+Set-Location .\mossandmorrows
 ```
 
-If the repository is already cloned, open a PowerShell terminal in that folder instead. Confirm it is the project root:
+For the existing clone on this machine, open PowerShell in the Git root, check status, then enter the Astro app root:
 
 ```powershell
+Set-Location "$HOME\Downloads\Personal\crochet\mossandmorrows"
+git status --short --branch
+Set-Location .\crochet
 Test-Path .\package.json
 Test-Path .\site.config.json
 ```
 
-Both commands should return `True`.
+The last two commands should return `True`. Run npm commands from this `crochet` app folder.
 
 ## Install and run
 
-Run these commands from the project root:
+Run these commands from the `mossandmorrows\crochet` app root:
 
 ```powershell
 npm install
@@ -81,11 +95,12 @@ npm run preview
 
 ## Commit to GitHub
 
-From the project root, inspect the files that will be committed, then stage and commit the project:
+Run Git commands from the `mossandmorrows` repository root. Inspect the worktree, then stage the app and root ignore file:
 
 ```powershell
+Set-Location "$HOME\Downloads\Personal\crochet\mossandmorrows"
 git status --short
-git add .
+git add .\crochet .gitignore
 git status --short
 git commit -m "Set up crochet storefront"
 git push

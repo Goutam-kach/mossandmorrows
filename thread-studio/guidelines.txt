@@ -29,7 +29,7 @@ this repository. The older crochet/Astro app has been removed.
 
    Text/layout: index.html and styles.css.
    Motion/geometry: scene.js.
-   Menu, gallery, controls, form: app.js.
+   Menu, gallery, form: app.js.
 
 3. ENABLE DIRECT EMAIL SUBMISSIONS
 
@@ -101,13 +101,11 @@ this repository. The older crochet/Astro app has been removed.
    work progresses and remain visible when finished. The two yarn colors
    alternate through every crochet round of the planter. Scroll backwards
    to bring the birds back and unravel the scene.
-   The pause icon stops ambient motion; the expand icon isolates the scene.
-   Use the minimize icon or Escape to return to the website.
    Photos open larger when selected and close with X or Escape.
 
    If your OS requests reduced motion, automatic motion starts paused.
-   The play control can enable the 3D animation; CSS motion continues to
-   respect the operating system's preference.
+   The scene follows page scrolling and resumes if the reduced-motion
+   preference is turned off.
 
    If WebGL is blocked, a static yarn illustration appears instead.
    Hardware acceleration and a current browser improve 3D performance.

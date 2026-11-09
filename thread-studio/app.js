@@ -140,7 +140,6 @@
   const header = document.querySelector('.site-header');
   const journey = document.querySelector('.journey');
   const steps = [...document.querySelectorAll('.journey-step')];
-  const tools = document.querySelector('.scene-tools');
   const studioImage = document.querySelector('.studio-image');
   let scrollQueued = false;
   let currentStep = -1;
@@ -158,7 +157,6 @@
       document.querySelector('#step-number').textContent = `0${nextStep + 1}`;
       currentStep = nextStep;
     }
-    tools.classList.remove('is-hidden');
     window.threadScene?.setScroll(progress, {
       scrollY,
       journeyEnd
@@ -172,32 +170,12 @@
   addEventListener('scroll', scheduleScroll, { passive: true });
   addEventListener('resize', scheduleScroll);
   new ResizeObserver(scheduleScroll).observe(document.querySelector('main'));
-  let paused = reducedMotion.matches;
-  const motionButton = document.querySelector('#motion-toggle');
   function setPaused(value) {
-    paused = value;
     document.body.classList.toggle('motion-paused', value);
-    motionButton.setAttribute('aria-pressed', String(value));
-    motionButton.setAttribute('aria-label', value ? 'Play animation' : 'Pause animation');
-    motionButton.title = value ? 'Play animation' : 'Pause animation';
-    setIcon(motionButton, value ? 'play' : 'pause');
     window.threadScene?.setPaused(value);
   }
-  motionButton.addEventListener('click', () => setPaused(!paused));
   reducedMotion.addEventListener('change', event => setPaused(event.matches));
-  const expandButton = document.querySelector('#scene-expand');
-  const focusTargets = [document.querySelector('header'), document.querySelector('main'), document.querySelector('footer')];
-  function setExpanded(expanded) {
-    document.body.classList.toggle('scene-focused', expanded);
-    focusTargets.forEach(element => { element.inert = expanded; });
-    expandButton.setAttribute('aria-pressed', String(expanded));
-    expandButton.setAttribute('aria-label', expanded ? 'Minimize yarn scene' : 'Expand yarn scene');
-    expandButton.title = expanded ? 'Minimize yarn scene' : 'Expand yarn scene';
-    setIcon(expandButton, expanded ? 'minimize' : 'maximize');
-    window.threadScene?.setExpanded(expanded);
-  }
-  expandButton.addEventListener('click', () => setExpanded(!document.body.classList.contains('scene-focused')));
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); if (preview.open) preview.close(); setExpanded(false); } });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); if (preview.open) preview.close(); } });
   const form = document.querySelector('#inquiry-form');
   const status = form.querySelector('.form-status');
   const fallback = form.querySelector('.email-fallback');
@@ -230,7 +208,7 @@
       status.textContent = 'We could not send that just now. You can email us using the link below.';
     } finally { submit.disabled = false; }
   });
-  setPaused(paused);
+  setPaused(reducedMotion.matches);
   icons();
   updateScroll();
 })();

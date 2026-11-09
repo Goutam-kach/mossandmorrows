@@ -373,7 +373,6 @@
   let renderedProgress = 0;
   let paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let hidden = false;
-  let expanded = false;
   let mobile = false;
   let frame = 0;
   let previousTime = 0;
@@ -477,7 +476,7 @@
     const delta = Math.min((timestamp - (previousTime || timestamp)) / 1000, .05);
     previousTime = timestamp;
     if (!paused) elapsed += delta;
-    const target = expanded ? 0 : scrollProgress;
+    const target = scrollProgress;
     renderedProgress += (target - renderedProgress) * (paused ? 1 : Math.min(1, delta * 7));
     const outbound = THREE.MathUtils.clamp(renderedProgress / .3, 0, 1);
     const returning = THREE.MathUtils.smoothstep(renderedProgress, .43, .64);
@@ -487,14 +486,14 @@
     const plantEngagement = THREE.MathUtils.smoothstep(forming, .72, .96);
     const viewHeight = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const viewWidth = viewHeight * camera.aspect;
-    const compact = innerHeight < 600 && !expanded;
+    const compact = innerHeight < 600;
     const sizing = (mobile ? Math.min(viewWidth / 7.5, 1.05) : Math.min(1.65, viewWidth / 11.5)) * (compact ? .68 : 1);
     world.scale.setScalar(sizing);
-    world.position.y = expanded ? 0 : Math.max(0, (pageMetrics?.scrollY || 0) - (pageMetrics?.journeyEnd || 0)) / innerHeight * viewHeight;
-    world.visible = expanded || world.position.y < viewHeight * 1.4;
-    const rightX = (expanded ? 0 : mobile ? viewWidth * (compact ? .3 : .14) : viewWidth * .235) / sizing;
+    world.position.y = Math.max(0, (pageMetrics?.scrollY || 0) - (pageMetrics?.journeyEnd || 0)) / innerHeight * viewHeight;
+    world.visible = world.position.y < viewHeight * 1.4;
+    const rightX = (mobile ? viewWidth * (compact ? .3 : .14) : viewWidth * .235) / sizing;
     const leftX = (mobile ? -viewWidth * .26 : -viewWidth * .28) / sizing;
-    const localY = (expanded ? 0 : compact ? -viewHeight * .26 : mobile ? -viewHeight * .23 : THREE.MathUtils.lerp(-.6, -viewHeight * .22, outbound * (1 - returning))) / sizing;
+    const localY = (compact ? -viewHeight * .26 : mobile ? -viewHeight * .23 : THREE.MathUtils.lerp(-.6, -viewHeight * .22, outbound * (1 - returning))) / sizing;
     const travelX = THREE.MathUtils.lerp(THREE.MathUtils.lerp(rightX + 2.2, leftX, outbound), rightX, returning);
     const sourceSpread = THREE.MathUtils.smoothstep(renderedProgress, .2, .66);
     const firstBallX = mobile ? THREE.MathUtils.lerp(.77, .8, sourceSpread) : THREE.MathUtils.lerp(.63, .54, sourceSpread);
@@ -588,7 +587,7 @@
       const birdY = THREE.MathUtils.lerp(perchY, corridor, THREE.MathUtils.smoothstep(flight, 0, .2)) + Math.sin(elapsed * .65 + index) * .004 * flight;
       const width = (mobile ? Math.min(70, innerWidth * .18) : 138) * (1 - index * .1) * (compact ? .58 : 1);
       const scale = width * viewHeight / innerHeight / 1.44;
-      bird.group.visible = !expanded && formation > 0 && flight < 1;
+      bird.group.visible = formation > 0 && flight < 1;
       bird.group.position.set((birdX - .5) * viewWidth, (.5 - birdY) * viewHeight, 0);
       bird.group.position.z = 1.25 + index * .12;
       const birdGrowth = THREE.MathUtils.smoothstep(formation, .05, .6);
@@ -598,7 +597,7 @@
       bird.nearWing.rotation.z = .08 + Math.sin(phase) * .8 * flutter;
       bird.farWing.rotation.z = -.08 - Math.sin(phase + .3) * .72 * flutter;
       bird.traceGeometry.setDrawRange(0, Math.floor(formation * bird.traceGeometry.index.count / 3) * 3);
-      if (formation > 0 && formation < 1 && !expanded) {
+      if (formation > 0 && formation < 1) {
         bird.group.updateWorldMatrix(true, true);
         bird.traceCurve.getPointAt(formation, workingTip).applyMatrix4(bird.trace.matrixWorld);
         world.worldToLocal(workingTip);
@@ -648,8 +647,7 @@
   window.threadScene = {
     setScroll(progress, metrics) { scrollProgress = progress; pageMetrics = metrics; hidden = false; requestDraw(); },
     setPaused(value) { paused = value; previousTime = 0; requestDraw(); },
-    setExpanded(value) { expanded = value; requestDraw(); },
-    getState() { return { paused, hidden, expanded, progress: renderedProgress, frames: frameCount, treeSegments: drawnTreeSegments, birds: birds.map(bird => ({ ...bird.state })), ...screenState }; }
+    getState() { return { paused, hidden, progress: renderedProgress, frames: frameCount, treeSegments: drawnTreeSegments, birds: birds.map(bird => ({ ...bird.state })), ...screenState }; }
   };
   addEventListener('pointermove', event => { pointer.set(event.clientX / innerWidth * 2 - 1, event.clientY / innerHeight * 2 - 1); }, { passive: true });
   addEventListener('resize', resize);

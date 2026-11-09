@@ -15,11 +15,11 @@ This folder is the website. Open `thread-studio/index.html` from the repository 
 - The birds form one at a time, flap their 3D wings independently, and fly from right to left as scrolling advances. Scrolling backwards returns them to their perches and reveals the crochet forms in reverse.
 - The hook and connecting yarn respond from the first scroll at the top of the page, without waiting for the making section. There is no separate vertical strand along the later sections.
 - A dark-sage header, warm-paper lettering, and copper edge retain the same palette with stronger contrast.
-- Pause/resume and expand/minimize controls. Escape exits the expanded scene.
+- The scene follows page scroll and respects the operating system's reduced-motion preference.
 - Smooth anchor navigation, scroll reveals, photo parallax, and an animated text ribbon.
 - Responsive collection filters, enlarged image previews, and product-specific inquiries.
 - Reduced-motion support, keyboard navigation, and a static yarn fallback when WebGL is unavailable.
-- Animation stops when paused or the browser tab is hidden. The large 3D objects leave the viewport after the making journey.
+- Animation pauses when reduced motion is enabled or the browser tab is hidden. The large 3D objects leave the viewport after the making journey.
 
 ## Edit
 
@@ -50,7 +50,7 @@ No analytics, cookies, remote font requests, or runtime CDN requests are include
 - [x] Standalone site moved to the repository-root `thread-studio` folder; obsolete `crochet` app removed.
 - [x] Local libraries, fonts, photos, configuration, source credits, and licenses retained. No Node installation or build required.
 - [x] Relocated page loads, local images decode, fonts load, and the 3D scene starts without runtime errors.
-- [x] Mobile navigation, collection filters, photo preview and Escape, inquiry selection, scene controls, and reduced motion checked.
+- [x] Mobile navigation, collection filters, photo preview and Escape, inquiry selection, and reduced motion checked.
 - [x] Email fallback and mocked Formspree success/failure checked without sending real inquiries; unavailable-WebGL fallback checked.
 - [x] Yarn attachments, both hooks, progressive stitches, reverse scrolling, and responsive layouts checked as described below.
 - [x] Windows, publish, and Git instructions updated for the new layout. No commit or push performed automatically.
@@ -65,14 +65,14 @@ Ready to commit as a placeholder site, not yet ready to present as a live custom
 
 Verified in the integrated Chromium browser on Windows:
 
-- Current 3D plant/bird journey: screenshots at 390 x 844 and 1440 x 960; widths 320, 390, 607 x 404, 768, 1440, and 1920, with no horizontal overflow or bird overlap with headings, paragraphs, progress labels, or scene controls at sampled stages.
+- Current 3D plant/bird journey: screenshots at 390 x 844 and 1440 x 960; widths 320, 390, 607 x 404, 768, 1440, and 1920, with no horizontal overflow or bird overlap with headings, paragraphs, or progress labels at sampled stages.
 - Rendered mobile and desktop screenshots, loaded local images/fonts, and checked WebGL output and runtime errors. The separate page-spanning strand was removed.
 - Early-scroll regression check at widths 390 and 1440: the hook moves and the ball begins shrinking at scroll positions 20, 100, and 300 pixels, before the making section. This immediate-scroll start is retained in the plant scene.
-- The planter and leaves finish before the two fully stitched birds form. Both balls and hooks remain visible, and each working strand connects its colored source to its corresponding hook. The birds' positions move left across successive scroll stages; their wing angles change during flight and remain fixed when paused.
+- The planter and leaves finish before the two fully stitched birds form. Both balls and hooks remain visible, and each working strand connects its colored source to its corresponding hook. The birds' positions move left across successive scroll stages, and their wing angles change during flight.
 - Attachment regression: both strand endpoints remain within floating-point tolerance of their winding anchors and hook tips throughout sampled progress at all six viewport sizes. Both hooks move before and during planter construction; all 324 planter stitches appear and reset on reverse scroll. Desktop/mobile screenshots and live-render pixel checks confirm visible output. The mobile sage source clears the journey heading.
 - Reduced-motion mode freezes frame advancement and wing angles. Reverse scrolling removes the birds and growing plant. The layered color palette includes sage, cream, teal, coral, marigold, and terracotta.
 - Header foreground/background contrast: approximately 7.5:1.
-- Pause freezes frames; expand/minimize restores page interaction.
+- Reduced-motion mode pauses the 3D scene; normal scrolling controls its progress.
 - Mobile menu, Escape, filters, image preview, and inquiry preselection.
 - Email fallback, mocked Formspree success/error, reduced-motion mode, and simulated unavailable WebGL.
 
